@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#100d18" />
+  <title>Agent Marks — SVG identity studio</title>
+  <style>
+    :root { --ink:#f5f2fa; --muted:#a69db4; --line:rgba(255,255,255,.10); --panel:rgba(27,21,39,.78); --purple:#9668ff; --bg:#100d18; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); font:14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:radial-gradient(60rem 40rem at 72% -12%,rgba(122,71,255,.27),transparent 56%),radial-gradient(48rem 32rem at -5% 97%,rgba(22,163,145,.15),transparent 64%),var(--bg); }
+    .shell { width:min(1160px,calc(100% - 32px)); margin:0 auto; padding:32px 0 52px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding-bottom:30px; }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:760; letter-spacing:-.035em; font-size:19px; }
+    .brand-mark { display:grid; place-items:center; width:28px; height:28px; border-radius:11px; background:linear-gradient(145deg,#a77bff,#6840d8); box-shadow:0 8px 24px rgba(134,87,255,.32); }
+    .brand-mark i { width:9px; height:9px; border-radius:50%; background:#fff; box-shadow:9px 0 #fff,-4px 8px #fff; transform:translate(-3px,-3px); }
+    .tag { border:1px solid var(--line); color:var(--muted); border-radius:999px; padding:5px 10px; font-size:11px; }
+    .hero { display:grid; grid-template-columns:1.04fr .96fr; gap:22px; align-items:stretch; }
+    .intro, .studio { border:1px solid var(--line); background:var(--panel); backdrop-filter:blur(16px); border-radius:24px; }
+    .intro { padding:44px; min-height:600px; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; position:relative; }
+    .intro:after { content:""; position:absolute; width:290px; height:290px; border:1px solid rgba(177,140,255,.12); border-radius:50%; right:-100px; bottom:-108px; box-shadow:0 0 0 50px rgba(177,140,255,.025),0 0 0 100px rgba(177,140,255,.018); }
+    h1 { margin:0; max-width:650px; font-size:clamp(42px,6vw,72px); line-height:.95; letter-spacing:-.075em; }
+    h1 em { font-style:normal; color:#ac89ff; }
+    .lede { max-width:490px; margin:22px 0 0; color:var(--muted); font-size:16px; }
+    .rules { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:38px; }
+    .rule { border:1px solid var(--line); padding:12px; border-radius:14px; background:rgba(255,255,255,.025); color:var(--muted); font-size:12px; }
+    .rule b { display:block; color:var(--ink); font-size:17px; letter-spacing:-.035em; }
+    .studio { padding:18px; display:flex; flex-direction:column; gap:16px; }
+    .preview { min-height:315px; border-radius:18px; display:grid; place-items:center; overflow:hidden; position:relative; background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012)); border:1px solid rgba(255,255,255,.07); }
+    .preview:before { content:""; width:245px; height:245px; position:absolute; border-radius:50%; background:radial-gradient(circle,rgba(153,102,255,.14),transparent 69%); }
+    #preview { width:220px; height:220px; position:relative; z-index:1; }
+    .mark { width:100%; height:100%; overflow:visible; cursor:default; transition:transform 180ms ease; }
+    .mark:hover { transform:scale(1.035); }
+    .controls { display:grid; gap:11px; }
+    .field { display:grid; gap:6px; }
+    label { color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:.10em; font-weight:700; }
+    input, select, button { font:inherit; }
+    input, select { width:100%; color:var(--ink); background:rgba(8,6,13,.56); border:1px solid var(--line); outline:0; border-radius:11px; padding:11px 12px; transition:border-color .15s,box-shadow .15s; }
+    input:focus,select:focus { border-color:#9466ff; box-shadow:0 0 0 3px rgba(148,102,255,.16); }
+    option { color:#17121f; }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .colors { display:flex; flex-wrap:wrap; gap:8px; }
+    .swatch { width:25px; height:25px; padding:0; border-radius:50%; border:2px solid transparent; cursor:pointer; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12); }
+    .swatch.active { border-color:#fff; box-shadow:0 0 0 2px var(--purple); }
+    .actions { display:flex; gap:9px; padding-top:3px; }
+    button { border:1px solid var(--line); padding:10px 12px; color:var(--ink); background:rgba(255,255,255,.045); cursor:pointer; border-radius:11px; transition:transform .15s,background .15s,border-color .15s; }
+    button:hover { transform:translateY(-1px); background:rgba(255,255,255,.09); }
+    button.primary { flex:1; background:#8b60f5; border-color:#9b74ff; font-weight:700; }
+    button.primary:hover { background:#9a70ff; }
+    .output { margin-top:5px; padding:12px; border:1px solid var(--line); border-radius:12px; background:#0e0a14; color:#bdb4c9; font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap; overflow:auto; min-height:66px; }
+    .footer { display:flex; justify-content:space-between; gap:15px; color:var(--muted); margin-top:20px; font-size:12px; }
+    .toast { position:fixed; right:20px; bottom:20px; border:1px solid rgba(156,111,255,.5); background:#211634; padding:11px 14px; border-radius:10px; transform:translateY(20px); opacity:0; transition:.2s; pointer-events:none; }
+    .toast.show { transform:none; opacity:1; }
+    @media (max-width:820px) { .hero { grid-template-columns:1fr; }.intro { min-height:380px; padding:30px; }.studio { padding:14px; }.shell { width:min(100% - 20px,1160px); padding-top:18px; } header { padding-bottom:18px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><span class="brand-mark"><i></i></span>Agent Marks</div>
+      <span class="tag">v1 · local SVG identity engine</span>
+    </header>
+    <section class="hero">
+      <section class="intro">
+        <div>
+          <h1>Animated <em>agent identities.</em></h1>
+          <p class="lede">A constrained SVG mascot system for agentesPRO: crisp at every size, stable from a seed, alive on hover, and fully self-hosted.</p>
+        </div>
+        <div class="rules"><div class="rule"><b>18</b>soft forms</div><div class="rule"><b>11</b>flat colors</div><div class="rule"><b>1 / 3</b>live eyes</div></div>
+      </section>
+      <section class="studio" aria-label="Agent Mark generator">
+        <div class="preview"><div id="preview"></div></div>
+        <div class="controls">
+          <div class="field"><label for="seed">Agent seed</label><input id="seed" value="larvuz" autocomplete="off" /></div>
+          <div class="split">
+            <div class="field"><label for="shape">Shape</label><select id="shape"><option value="auto">Auto from seed</option></select></div>
+            <div class="field"><label for="eyes">Eyes</label><select id="eyes"><option value="auto">Auto from seed</option><option value="1">One eye</option><option value="3">Three eyes</option></select></div>
+          </div>
+          <div class="field"><label>Flat color</label><div id="colors" class="colors"></div></div>
+          <div class="actions"><button id="randomize" class="primary" type="button">Randomize identity</button><button id="copy" type="button">Copy config</button></div>
+          <pre id="output" class="output"></pre>
+        </div>
+      </section>
+    </section>
+    <div class="footer"><span>One silhouette · One color · One or three eyes.</span><span>SVG · requestAnimationFrame · no dependencies</span></div>
+  </main>
+  <div id="toast" class="toast">Config copied</div>
+<script>
+const COLORS = [
+  ['mint','#28B783'], ['teal','#20B4B1'], ['blue','#3977D8'], ['violet','#7354D8'], ['rose','#D92E6D'], ['coral','#F05C4B'], ['orange','#F58220'], ['yellow','#F6B91B'], ['forest','#319951'], ['pink','#E95491'], ['ink-blue','#225EA8']
+];
+const SHAPES = [
+  ['blob','M20 31 C27 17 39 22 49 17 C63 10 67 25 79 25 C93 26 94 42 87 51 C96 62 88 77 75 77 C67 91 52 82 43 85 C27 91 20 79 22 67 C8 59 11 40 20 31 Z'],
+  ['pebble','M50 12 C70 12 88 27 89 48 C90 72 74 87 50 88 C27 89 12 74 11 52 C10 29 28 13 50 12 Z'],
+  ['bean','M25 24 C40 12 57 19 65 27 C76 37 91 39 91 56 C91 77 68 85 52 76 C38 68 26 83 14 70 C3 58 10 37 25 24 Z'],
+  ['egg','M50 9 C66 9 80 31 83 53 C86 75 72 90 50 90 C28 90 14 75 17 53 C20 31 34 9 50 9 Z'],
+  ['squircle','M28 14 H72 C82 14 88 20 88 30 V70 C88 82 82 88 70 88 H30 C18 88 12 82 12 70 V30 C12 20 18 14 28 14 Z'],
+  ['cloud','M18 69 C7 60 12 45 23 43 C21 29 38 23 48 31 C56 17 78 23 77 39 C92 38 97 57 86 67 C82 80 64 80 55 75 C45 85 27 82 18 69 Z'],
+  ['teardrop','M50 8 C50 8 20 42 20 62 C20 79 33 90 50 90 C67 90 80 79 80 62 C80 42 50 8 50 8 Z'],
+  ['leaf','M15 64 C16 31 43 12 84 17 C85 55 69 81 35 85 C20 86 14 77 15 64 Z'],
+  ['triangle','M50 10 L91 84 H9 Z'],
+  ['star','M50 8 L60 31 L84 22 L75 46 L93 60 L68 64 L68 89 L50 73 L31 89 L32 64 L7 60 L25 46 L16 22 L40 31 Z'],
+  ['flower','M50 19 C58 6 73 12 72 27 C87 20 96 34 85 45 C99 52 94 68 79 69 C84 85 67 92 57 81 C48 95 31 87 34 72 C18 78 7 63 18 52 C4 42 15 28 29 32 C26 17 42 8 50 19 Z'],
+  ['clover','M50 41 C60 19 82 19 86 35 C90 48 77 56 67 57 C82 66 82 84 68 89 C56 93 48 78 47 69 C38 83 20 83 15 69 C11 56 26 48 35 47 C20 39 21 20 36 16 C48 13 52 31 50 41 Z'],
+  ['arch','M18 88 V48 C18 25 31 12 50 12 C69 12 82 25 82 48 V88 H63 V72 C63 66 58 62 50 62 C42 62 37 66 37 72 V88 Z'],
+  ['diamond','M50 8 L88 50 L50 92 L12 50 Z'],
+  ['hexagon','M27 14 H73 L92 50 L73 86 H27 L8 50 Z'],
+  ['moon','M75 12 C46 17 34 37 37 57 C40 77 55 87 76 87 C57 98 27 90 16 68 C2 40 19 10 48 7 C59 6 68 8 75 12 Z'],
+  ['jelly','M18 55 C18 27 30 13 50 13 C70 13 82 27 82 55 V79 C77 90 68 81 63 76 C58 90 47 90 43 76 C36 87 25 88 18 79 Z'],
+  ['organic-square','M25 13 C35 10 40 16 50 15 C62 12 69 8 78 16 C88 24 84 35 87 44 C92 56 91 70 81 78 C72 87 62 83 51 86 C38 90 26 88 18 78 C10 68 15 59 13 49 C9 36 13 22 25 13 Z']
+];
+const MOTION = { gazeDistance:200, pupilStiffness:.075, pupilDamping:.78, bodyBreathing:.008 };
+const SVG_NS='http://www.w3.org/2000/svg';
+const hashString=str=>{let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
+const mulberry32=seed=>()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296};
+const el=(name,attrs={})=>{const node=document.createElementNS(SVG_NS,name);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v));return node};
+
+class AgentMark {
+  constructor(container, options={}) { this.container=container; this.set(options); this.render(); this.addEvents(); this.animate(); }
+  set(options={}) { this.options=options; const random=mulberry32(hashString(String(options.seed||'agent'))); this.shapeIndex=options.shapeIndex ?? Math.floor(random()*SHAPES.length); this.colorIndex=options.colorIndex ?? Math.floor(random()*COLORS.length); this.eyeCount=options.eyeCount ?? (random()<.55?1:3); this.lookX=0; this.lookY=0; this.targetX=0; this.targetY=0; this.vx=0; this.vy=0; this.blink=0; this.blinkDirection=0; this.nextBlink=performance.now()+1300+random()*3400; this.timeOffset=random()*10; }
+  render(){ this.container.replaceChildren(); this.svg=el('svg',{viewBox:'0 0 100 100',class:'mark',role:'img','aria-label':`Agent Mark ${SHAPES[this.shapeIndex][0]}`}); this.bodyGroup=el('g'); this.bodyGroup.append(el('path',{d:SHAPES[this.shapeIndex][1],fill:COLORS[this.colorIndex][1]})); this.svg.append(this.bodyGroup); this.eyeLayer=el('g'); this.eyes=[]; const pos=this.eyeCount===1?[{x:50,y:49,size:14}]:[{x:39,y:44,size:10},{x:61,y:44,size:10},{x:50,y:61,size:10}]; pos.forEach(p=>{const group=el('g');const white=el('circle',{cx:p.x,cy:p.y,r:p.size,fill:'#fff'});const pupil=el('circle',{cx:p.x,cy:p.y,r:p.size*.53,fill:'#16121a'});group.append(white,pupil);this.eyeLayer.append(group);this.eyes.push({group,pupil,x:p.x,y:p.y,r:p.size,pr:p.size*.53})}); this.svg.append(this.eyeLayer); this.container.append(this.svg); }
+  addEvents(){ this.onPointer=e=>{const r=this.svg.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),distance=Math.hypot(dx,dy),strength=Math.max(.15,1-distance/700);this.targetX=Math.max(-1,Math.min(1,dx/MOTION.gazeDistance))*strength;this.targetY=Math.max(-1,Math.min(1,dy/MOTION.gazeDistance))*strength};window.addEventListener('pointermove',this.onPointer,{passive:true}); }
+  animate=(now=performance.now())=>{ const sx=(this.targetX-this.lookX)*MOTION.pupilStiffness,sy=(this.targetY-this.lookY)*MOTION.pupilStiffness; this.vx=(this.vx+sx)*MOTION.pupilDamping;this.vy=(this.vy+sy)*MOTION.pupilDamping;this.lookX+=this.vx;this.lookY+=this.vy; this.eyes.forEach(e=>{const max=e.r-e.pr-1.6;let x=this.lookX*max,y=this.lookY*max,d=Math.hypot(x,y);if(d>max){x=x/d*max;y=y/d*max}e.pupil.setAttribute('cx',e.x+x);e.pupil.setAttribute('cy',e.y+y)}); if(now>this.nextBlink&&!this.blinkDirection)this.blinkDirection=1;if(this.blinkDirection===1&&this.blink>=1)this.blinkDirection=-1;this.blink+=this.blinkDirection===1?.17:this.blinkDirection===-1?-.2:0;if(this.blink<=0&&this.blinkDirection===-1){this.blink=0;this.blinkDirection=0;this.nextBlink=now+1800+Math.random()*4300}if(this.blink>1)this.blink=1; const syEye=Math.max(.07,1-this.blink);this.eyes.forEach(e=>e.group.setAttribute('transform',`translate(0 ${e.y}) scale(1 ${syEye}) translate(0 ${-e.y})`));const t=now*.001+this.timeOffset,b=Math.sin(t*1.6)*MOTION.bodyBreathing,rot=Math.sin(t*.7)*.32;this.bodyGroup.setAttribute('transform',`translate(50 50) rotate(${rot}) scale(${1+b} ${1-b}) translate(-50 -50)`);requestAnimationFrame(this.animate); }
+}
+
+const $=id=>document.getElementById(id); const seed=$('seed'),shape=$('shape'),eyes=$('eyes'),colors=$('colors'),out=$('output'); let selectedColor='auto', mark;
+SHAPES.forEach(([name],i)=>shape.add(new Option(name.replaceAll('-',' '),i)));
+COLORS.forEach(([name,hex],i)=>{const b=document.createElement('button');b.className='swatch';b.title=name;b.style.background=hex;b.onclick=()=>{selectedColor=i;render()};colors.append(b)});
+function appearance(){const random=mulberry32(hashString(seed.value||'agent'));const si=shape.value==='auto'?Math.floor(random()*SHAPES.length):Number(shape.value);const ci=selectedColor==='auto'?Math.floor(random()*COLORS.length):selectedColor;const ec=eyes.value==='auto'?(random()<.55?1:3):Number(eyes.value);return {seed:seed.value||'agent',shape:SHAPES[si][0],color:COLORS[ci][0],eyes:ec,shapeIndex:si,colorIndex:ci}}
+function render(){const a=appearance();document.querySelectorAll('.swatch').forEach((b,i)=>b.classList.toggle('active',i===a.colorIndex));mark?.svg?.remove();mark=new AgentMark($('preview'),a);out.textContent=JSON.stringify({mode:'generated',version:1,seed:a.seed,shape:a.shape,color:a.color,eyes:a.eyes},null,2)}
+function randomize(){seed.value='agent-'+Math.random().toString(36).slice(2,9);shape.value='auto';eyes.value='auto';selectedColor='auto';render()}
+$('randomize').onclick=randomize;[seed,shape,eyes].forEach(node=>node.addEventListener('input',render));$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(out.textContent);$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1500)}catch{out.focus()}};render();
+</script>
+</body>
+</html>
