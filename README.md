@@ -2,7 +2,7 @@
 
 A small, dependency-free SVG identity engine for agent profiles.
 
-**One silhouette. One flat color. One or three live eyes.**
+**One silhouette. One flat color. One, two, or three live eyes.**
 
 Agent Marks is built for self-hosted agent products, enterprise deployments, and interfaces that need memorable identities without relying on external avatar services.
 
@@ -10,7 +10,7 @@ Agent Marks is built for self-hosted agent products, enterprise deployments, and
 
 - Generates a stable identity from any seed: `Larvuz` will always render as Larvuz.
 - Uses 18 constrained SVG silhouettes and 11 flat color presets.
-- Supports one or three large responsive eyes.
+- Supports one, two, or three large responsive eyes.
 - Adds subtle pointer gaze, spring physics, blinking, breathing, and hover presence.
 - Lets users randomize, set a seed, pick a color, select a form, and control eye count.
 - Produces a compact profile payload that can be saved in an agent profile.
