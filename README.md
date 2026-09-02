@@ -11,7 +11,8 @@ Agent Marks is built for self-hosted agent products, enterprise deployments, and
 - Generates a stable identity from any seed: `Larvuz` will always render as Larvuz.
 - Uses 18 constrained SVG silhouettes and 11 flat color presets.
 - Supports one, two, or three large responsive eyes.
-- Adds subtle pointer gaze, spring physics, blinking, breathing, and hover presence.
+- Adds subtle pointer gaze, spring pupil motion, random blinking, breathing, and hover presence.
+- Respects `prefers-reduced-motion` for people who opt out of animation.
 - Lets users randomize, set a seed, pick a color, select a form, and control eye count.
 - Produces a compact profile payload that can be saved in an agent profile.
 - Runs entirely in the browser. No canvas, model, WebGL, generated image API, or tracking.
